@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:padding="10dp"
+        android:background="@drawable/rounded_text2"
+        >
+
+        <TextView
+            android:id="@+id/heading2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="PDF File"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:padding="4dp"
+            />
+
+        <EditText
+            android:id="@+id/input2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/heading2"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/edittext_underline"
+            android:gravity="center"
+            android:hint="Course/Subject Name"
+            android:textColor="#000"
+            android:layout_marginHorizontal="20dp"/>
+
+        <TextView
+            android:id="@+id/action_ok2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="12dp"
+            android:text="UPLOAD"
+            android:textColor="#33bbff"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/action_cancel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignRight="@+id/action_ok2"
+            android:layout_marginRight="80dp"
+            android:text="CANCEL"
+            android:textColor="#33bbff"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

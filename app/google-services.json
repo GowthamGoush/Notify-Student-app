@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "656617361094",
+    "firebase_url": "https://studentnotify-1418d.firebaseio.com",
+    "project_id": "studentnotify-1418d",
+    "storage_bucket": "studentnotify-1418d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656617361094:android:bd276cd707844702af51c7",
+        "android_client_info": {
+          "package_name": "com.example.studentnotify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "656617361094-1ioa0q5ko6irr40kemfbn3ne87vul4vj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQDlDjMTh2nvUSoqVsEFUP80iQIJT0yAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "656617361094-1ioa0q5ko6irr40kemfbn3ne87vul4vj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

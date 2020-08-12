@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Notify</string>
+    <string name="tab_text_1">Attendance</string>
+    <string name="tab_text_2">Files</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="chooser_title">Browse with</string>
+    <string name="title_activity_fullscreen">Notify</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>
