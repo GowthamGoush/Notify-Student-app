@@ -43,7 +43,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginRight="12dp"
-            android:text="UPLOAD"
+            android:text="ADD"
             android:textColor="#33bbff"
             android:textSize="16sp" />
 

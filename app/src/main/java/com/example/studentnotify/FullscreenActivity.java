@@ -39,7 +39,7 @@ public class FullscreenActivity extends AppCompatActivity {
         imageView.setAnimation(top);
         textView.setAnimation(bottom);
 
-        final Intent intent = new Intent(this,MainActivity.class);
+        final Intent intent = new Intent(this,MainActivity2.class);
 
         CountDownTimer countDownTimer = new CountDownTimer(3000,1000) {
             @Override

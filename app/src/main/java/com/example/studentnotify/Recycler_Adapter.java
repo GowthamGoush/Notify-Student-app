@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Frag1_Viewholder> {
 
     ArrayList<SubjectDetails> Frag1List;
+    OnItemClickListener mListener;
 
     public class Frag1_Viewholder extends RecyclerView.ViewHolder {
 
@@ -51,8 +52,18 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Frag
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Frag1List.remove(getAdapterPosition());
-                    notifyItemRemoved(getAdapterPosition());
+                    //Frag1List.remove(getAdapterPosition());
+                    //notifyItemRemoved(getAdapterPosition());
+                    if(mListener != null){
+
+                        int position = getAdapterPosition();
+
+                        if(position != RecyclerView.NO_POSITION){
+
+                            mListener.onRemoveClicked(position);
+
+                        }
+                    }
                 }
             });
 
@@ -113,6 +124,9 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Frag
             int percent = Num * 100 / dNum;
             holder.textView4.setText(percent + "%  (" + Num + "/" + dNum + ")");
         }
+        else {
+            holder.textView4.setText("0%  (0/0)");
+        }
 
         holder.textView4.setVisibility(isExpanded ? View.GONE : View.VISIBLE);
         holder.textView5.setVisibility(isExpanded ? View.GONE : View.VISIBLE);
@@ -122,5 +136,13 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Frag
     @Override
     public int getItemCount() {
         return Frag1List.size();
+    }
+
+    public interface OnItemClickListener {
+        void onRemoveClicked(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
     }
 }

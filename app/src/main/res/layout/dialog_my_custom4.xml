@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="270dp"
+        android:padding="10dp"
+        android:background="@drawable/rounded_text2"
+        >
+
+        <TextView
+            android:id="@+id/heading4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Sign up details"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:padding="4dp"
+            />
+
+        <EditText
+            android:id="@+id/inputName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/heading4"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/edittext_underline"
+            android:gravity="center"
+            android:hint="Your Name"
+            android:textColor="#000"
+            android:layout_marginHorizontal="20dp"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/inputId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/inputName"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/edittext_underline"
+            android:gravity="center"
+            android:hint="Your ID"
+            android:inputType="number"
+            android:textColor="#000"
+            android:layout_marginHorizontal="20dp" />
+
+        <CheckBox
+            android:id="@+id/checkTeacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teacher"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/inputId"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="30dp"/>
+
+        <CheckBox
+            android:id="@+id/checkStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/inputId"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="30dp"/>
+
+        <TextView
+            android:id="@+id/action_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="20dp"
+            android:text="SIGN UP"
+            android:textColor="#33bbff"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/action_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="20dp"
+            android:text="CANCEL"
+            android:textColor="#33bbff"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -8,33 +8,51 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.example.studentnotify.BlankFragment2;
 import com.example.studentnotify.MainFragment;
 import com.example.studentnotify.R;
 
-/**
- * A [FragmentPagerAdapter] that returns a fragment corresponding to
- * one of the sections/tabs/pages.
- */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2};
     private final Context mContext;
+    private int logTo;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm , int logIn) {
         super(fm);
         mContext = context;
+        logTo = logIn;
+        if(logIn==1){
+            TAB_TITLES[0] = R.string.tab_text_3;
+        }
     }
 
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = null;
-        switch(position){
 
-            case 0 : fragment = BlankFragment.newInstance("Gow","tham");
-                break;
-            case 1 : fragment = new MainFragment();
-                break;
+        if(logTo != 1) {
+            switch (position) {
+
+                case 0:
+                    fragment = BlankFragment.newInstance("Gow",logTo);
+                    break;
+                case 1:
+                    fragment = BlankFragment2.newInstance("Gow", "tham");
+                    break;
+            }
+        }
+        else {
+            switch (position) {
+
+                case 0:
+                    fragment = new MainFragment();
+                    break;
+                case 1:
+                    fragment = BlankFragment2.newInstance("Gow", "tham");
+                    break;
+            }
         }
 
         return fragment;

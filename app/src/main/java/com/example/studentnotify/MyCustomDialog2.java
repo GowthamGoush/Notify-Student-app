@@ -23,6 +23,8 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -35,7 +37,7 @@ public class MyCustomDialog2 extends DialogFragment {
     private static final String TAG = "MyCustomDialog2";
 
     public interface OnInputSelected {
-        void sendInput(String input, String input1);
+        void sendInput(String input, String input1, Uri uriPath);
     }
 
     public OnInputSelected mOnInputSelected;
@@ -44,6 +46,7 @@ public class MyCustomDialog2 extends DialogFragment {
     private EditText mInput;
     private TextView mActionOk, mActionCancel;
     private StorageReference storageReference;
+    private DatabaseReference mDatabaseRef;
     private Uri uri1;
 
     @Nullable
@@ -53,7 +56,9 @@ public class MyCustomDialog2 extends DialogFragment {
         mActionOk = view.findViewById(R.id.action_ok2);
         mActionCancel = view.findViewById(R.id.action_cancel2);
         mInput = view.findViewById(R.id.input2);
+
         storageReference = FirebaseStorage.getInstance().getReference();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
         mActionCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,20 +99,27 @@ public class MyCustomDialog2 extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 1 && resultCode == -1 && data != null && data.getData() != null) {
 
-            uploadPDFFile(data.getData());
-
             uri1 = data.getData();
+
+            String name = mInput.getText().toString().trim();
+
+            mOnInputSelected.sendInput(name + "." + getFileExtension(uri1), "pdfUrl", uri1);
+
+            getDialog().dismiss();
+
+            /*uploadPDFFile(data.getData());
+
             StorageReference filepath = storageReference.child("PDFs").child(Objects.requireNonNull(uri1.getLastPathSegment()));
             filepath.putFile(uri1).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Toast.makeText(getContext(), "File uploaded", Toast.LENGTH_SHORT).show();
                 }
-            });
+            });*/
         }
     }
 
-    private void uploadPDFFile(Uri data) {
+    /*private void uploadPDFFile(Uri data) {
 
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Loading...");
@@ -124,6 +136,11 @@ public class MyCustomDialog2 extends DialogFragment {
 
                 String pdfUrl = url.toString();
                 String name = mInput.getText().toString().trim();
+
+                pdfDetails pdfDetails = new pdfDetails(name,pdfUrl);
+
+                String uploadId = mDatabaseRef.push().getKey();
+                mDatabaseRef.child(uploadId).setValue(pdfDetails);
 
                 mOnInputSelected.sendInput(name + " (" + getFileExtension(uri1) + " file)", pdfUrl);
 
@@ -144,6 +161,7 @@ public class MyCustomDialog2 extends DialogFragment {
         });
 
     }
+     */
 
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getActivity().getApplicationContext().getContentResolver();

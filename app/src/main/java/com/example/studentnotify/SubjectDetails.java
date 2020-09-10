@@ -1,12 +1,16 @@
 package com.example.studentnotify;
 
+import com.google.firebase.database.Exclude;
+
 public class SubjectDetails {
 
     private String Subject;
     private String Content;
     private String Description;
     private Boolean Expanded;
-    private int Attended,Bunked;
+    private int Attended;
+    private int Bunked;
+    private String subjectKey;
 
     public SubjectDetails(String subject, String content, String description, int attended, int bunked) {
         Subject = subject;
@@ -63,6 +67,14 @@ public class SubjectDetails {
 
     public void setExpanded(Boolean expanded) {
         Expanded = expanded;
+    }
+
+    public String getSubjectKey() {
+        return subjectKey;
+    }
+
+    public void setSubjectKey(String subjectKey) {
+        this.subjectKey = subjectKey;
     }
 
 }

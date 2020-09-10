@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studentnotify.ui.main.BlankFragment;
@@ -33,6 +34,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -46,61 +49,75 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class MainFragment extends Fragment implements MyCustomDialog2.OnInputSelected,MyCustomDialog3.OnInputSelected {
+public class MainFragment extends Fragment implements MyCustomDialog2.OnInputSelected,MyCustomDialog3.OnInputSelected, Recycler_PDF2_Adapter.OnItemClickListener {
 
     private static final String TAG = "MainFragment";
 
     private FloatingActionButton fab2;
-    private ListView listView;
+    private RecyclerView recyclerView;
     private ArrayList<pdfDetails> pdfDetailsList;
-    private ArrayList<String> nameList;
-    private ArrayAdapter<String> arrayAdapter;
+    private Recycler_PDF2_Adapter adapter;
     private RelativeLayout uploadLayout;
-    private int pos;
+    private int pos=0;
+
+    private FirebaseStorage mStorage;
+    private StorageReference storageReference;
+    private DatabaseReference mDatabaseRef;
+    private Uri uri1;
 
     @Override
-    public void sendInput(String input,String input1) {
+    public void sendInput(String input,String input1, Uri uriPath) {
         pdfDetailsList.add(new pdfDetails(input,input1));
-        nameList.add(input);
+        pdfDetailsList.get(pdfDetailsList.size()-1).setFilePath(uriPath);
         uploadLayout.setVisibility(View.GONE);
-        arrayAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void sendInput2(Boolean input) {
-        pdfDetailsList.remove(pos);
-        nameList.remove(pos);
-        arrayAdapter.notifyDataSetChanged();
-    }
+        if(!pdfDetailsList.get(pos).getPdfUrl().equals("pdfUrl")){
 
+            final String selectedKey = pdfDetailsList.get(pos).getFileKey();
+
+            StorageReference storageReference = mStorage.getReferenceFromUrl(pdfDetailsList.get(pos).getPdfUrl());
+            storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    mDatabaseRef.child(selectedKey).removeValue();
+                    Toast.makeText(getContext(), "File deleted successfully", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(), "Deletion failed", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        pdfDetailsList.remove(pos);
+        adapter.notifyDataSetChanged();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        listView = view.findViewById(R.id.pdfListView);
+        recyclerView = view.findViewById(R.id.pdfListView);
         fab2 = view.findViewById(R.id.fab2);
         uploadLayout = view.findViewById(R.id.uploadLayout);
         uploadLayout.setVisibility(View.GONE);
 
         loadData();
 
-        arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, nameList);
-        listView.setAdapter(arrayAdapter);
-        arrayAdapter.notifyDataSetChanged();
-        listView.setClickable(true);
+        mStorage = FirebaseStorage.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int pos = position;
-                pdfDetails pdfDetails = pdfDetailsList.get(pos);
-                String url = pdfDetails.getPdfUrl();
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(Intent.createChooser(intent, "Browse with"));
-            }
-        });
+        recyclerView.setHasFixedSize(true);
+        adapter = new Recycler_PDF2_Adapter(pdfDetailsList,getActivity());
+        recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(MainFragment.this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,18 +128,109 @@ public class MainFragment extends Fragment implements MyCustomDialog2.OnInputSel
             }
         });
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        return view;
+    }
+
+
+    private void loadData() {
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("Shared preferences2", Context.MODE_PRIVATE);
+
+        Gson gson = new Gson();
+
+        String json1 = sharedPreferences.getString("PDF list", null);
+
+        Type type1 = new TypeToken<ArrayList<pdfDetails>>() {
+        }.getType();
+        pdfDetailsList = gson.fromJson(json1, type1);
+        if (pdfDetailsList == null) {
+            pdfDetailsList = new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void onUploadClicked(int position) {
+
+        if(pdfDetailsList.get(position).getPdfUrl().equals("pdfUrl")) {
+            uri1 = pdfDetailsList.get(position).getFilePath();
+
+            uploadPDFFile(uri1, position);
+
+            StorageReference filepath = storageReference.child("PDFs").child(Objects.requireNonNull(uri1.getLastPathSegment()));
+            filepath.putFile(uri1).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getContext(), "File uploaded", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            Toast.makeText(getContext(), "File have been uploaded already", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRemoveClicked(int position) {
+        pdfDetailsList.remove(position);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onDeleteClicked(int position) {
+            pos = position;
+            MyCustomDialog3 dialog3 = new MyCustomDialog3();
+            dialog3.setTargetFragment(MainFragment.this, 1);
+            dialog3.show(getFragmentManager(), "MyCustomDialog3");
+    }
+
+    private void uploadPDFFile(Uri data, final int position) {
+
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("Loading...");
+        progressDialog.show();
+
+        StorageReference reference = storageReference.child("uploads/" + System.currentTimeMillis() + "." + getFileExtension(uri1));
+        reference.putFile(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                MyCustomDialog3 dialog3 = new MyCustomDialog3();
-                dialog3.setTargetFragment(MainFragment.this, 1);
-                dialog3.show(getFragmentManager(), "MyCustomDialog3");
-                pos = position;
-                return true;
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+                while (!uri.isComplete()) ;
+                Uri url = uri.getResult();
+
+                String pdfUrl = url.toString();
+
+                pdfDetailsList.get(position).setPdfUrl(pdfUrl);
+
+                String pdfName = pdfDetailsList.get(position).getPdfName();
+
+                pdfDetails pdfDetails = new pdfDetails(pdfName,pdfUrl);
+
+                String uploadId = mDatabaseRef.push().getKey();
+                mDatabaseRef.child(uploadId).setValue(pdfDetails);
+
+                pdfDetailsList.get(position).setFileKey(uploadId);
+
+                progressDialog.dismiss();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                progressDialog.setMessage("   Uploaded: " + (int) progress + "%");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT);
             }
         });
+    }
 
-        return view;
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = Objects.requireNonNull(getActivity()).getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
     @Override
@@ -136,34 +244,7 @@ public class MainFragment extends Fragment implements MyCustomDialog2.OnInputSel
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json1 = gson.toJson(pdfDetailsList);
-        String json2 = gson.toJson(nameList);
         editor.putString("PDF list", json1);
-        editor.putString("PDF Name List", json2);
         editor.apply();
     }
-
-    private void loadData() {
-        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("Shared preferences2", Context.MODE_PRIVATE);
-
-        Gson gson = new Gson();
-
-        String json1 = sharedPreferences.getString("PDF list", null);
-        String json2 = sharedPreferences.getString("PDF Name List", null);
-
-        Type type1 = new TypeToken<ArrayList<pdfDetails>>() {
-        }.getType();
-        pdfDetailsList = gson.fromJson(json1, type1);
-        if (pdfDetailsList == null) {
-            pdfDetailsList = new ArrayList<>();
-        }
-
-        Type type2 = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        nameList = gson.fromJson(json2, type2);
-        if (nameList == null) {
-            nameList = new ArrayList<>();
-            uploadLayout.setVisibility(View.VISIBLE);
-        }
-    }
-
 }
