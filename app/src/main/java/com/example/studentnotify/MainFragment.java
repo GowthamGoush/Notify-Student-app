@@ -139,8 +139,7 @@ public class MainFragment extends Fragment implements MyCustomDialog2.OnInputSel
 
         String json1 = sharedPreferences.getString("PDF list", null);
 
-        Type type1 = new TypeToken<ArrayList<pdfDetails>>() {
-        }.getType();
+        Type type1 = new TypeToken<ArrayList<pdfDetails>>() {}.getType();
         pdfDetailsList = gson.fromJson(json1, type1);
         if (pdfDetailsList == null) {
             pdfDetailsList = new ArrayList<>();

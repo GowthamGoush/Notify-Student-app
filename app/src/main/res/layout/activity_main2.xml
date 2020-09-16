@@ -58,10 +58,10 @@
         android:id="@+id/signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/teachDetail"
+        android:layout_below="@+id/googleSignIn"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:text="Sign Up"
+        android:text="Sign Up with NOTIFY"
         android:textColor="@android:color/holo_blue_bright" />
 
     <TextView
@@ -73,6 +73,14 @@
         android:layout_marginTop="15dp"
         android:text="Back"
         android:textColor="@android:color/holo_blue_bright" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/googleSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/teachDetail"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

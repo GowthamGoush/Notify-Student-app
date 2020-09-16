@@ -6,8 +6,8 @@ public class pdfDetails {
 
     private String pdfName;
     private String pdfUrl;
-    private Uri filePath;
-    private String fileKey;
+    private  transient Uri filePath;
+    private transient String fileKey;
 
     public pdfDetails() {
 

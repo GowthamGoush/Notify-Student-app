@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.studentnotify.ui.main.SectionsPagerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,14 +51,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                        Intent intent = new Intent(MainActivity.this, MainActivity2.class);
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("Logged", "false");
-                        editor.putInt("LoggedId", logTo);
-                        editor.commit();
-                        startActivity(intent);
-                        finish();
+                Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("Logged", "false");
+                editor.putInt("LoggedId", logTo);
+                editor.commit();
+                FirebaseAuth.getInstance().signOut();
+                Toast toast = Toast.makeText(MainActivity.this, "Logged out successfully !", Toast.LENGTH_SHORT);
+                toast.show();
+                startActivity(intent);
+                finish();
             }
         });
     }
